@@ -149,3 +149,322 @@
         /* Modal Overlay */
         .modal-overlay {
             display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Modern Bouncy Modal Content */
+        .modal-content {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: left;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            transform: scale(0.8) translateY(30px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .modal-overlay.show { display: flex; opacity: 1; }
+        .modal-overlay.show .modal-content { transform: scale(1) translateY(0); opacity: 1; }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover { 
+            color: #f8fafc; 
+            transform: rotate(90deg);
+        }
+
+        .modal-content h2 { 
+            margin-bottom: 25px; 
+            color: #f8fafc; 
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* Form Styling */
+        .form-group { margin-bottom: 22px; }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1rem;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+        
+        .form-info {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            display: block;
+            line-height: 1.4;
+        }
+
+        /* Input Container for Icons */
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        input[type="email"], select, textarea {
+            width: 100%;
+            padding: 14px 14px 14px 40px; /* Left padding for icons */
+            border-radius: 10px;
+            border: 2px solid #334155;
+            background: rgba(15, 23, 42, 0.6);
+            color: #f8fafc;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        textarea { 
+            padding: 14px; /* Reset padding for textarea since it has no icon */
+            resize: vertical; 
+            min-height: 100px; 
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #38bdf8;
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+        }
+
+        input:focus + i, select:focus + i {
+            color: #38bdf8;
+        }
+
+        /* Custom Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            border: 1px solid #334155;
+            z-index: 2000;
+            transform: translateX(150%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.success i { color: #10b981; font-size: 1.3rem; }
+        .toast.error i { color: #ef4444; font-size: 1.3rem; }
+
+        /* Keyframes */
+        @keyframes containerFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <div class="container">
+        <h1>Welcome to ya story! <i class="fa-solid fa-sparkles" style="font-size: 2rem; color: #facc15;"></i></h1>
+        <p>We host static websites for the people that just want a simple bio or information website.</p>
+        <p>Want your own custom site? Feel free to request one below!</p>
+        <button class="btn" id="openModalBtn">
+            Make a Request <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <div class="modal-overlay" id="requestModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModalBtn">&times;</button>
+            <h2>Request a Website</h2>
+            
+            <form id="webhookForm">
+                <div class="form-group">
+                    <label for="email">What is your email?</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" required placeholder="you@example.com">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Why do you want a custom website here?</label>
+                    <textarea id="reason" required placeholder="Tell us about your project..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="customHtmlSelect">Do you want to send us custom HTML?</label>
+                    <span class="form-info">If yes, please email your files to <strong>support@turbov.dev</strong> after submitting.</span>
+                    <div class="input-wrapper">
+                        <select id="customHtmlSelect" required style="padding-left: 40px;">
+                            <option value="" disabled selected>Select an option...</option>
+                            <option value="Yes, I will email the files to support@turbov.dev">Yes, I have custom HTML</option>
+                            <option value="No, I need a site made for me">No, I need one built</option>
+                        </select>
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px; animation: none; opacity: 1;">
+                    Submit Request <i class="fa-regular fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMessage">Request sent successfully!</span>
+    </div>
+
+    <script>
+        // DOM Elements
+        const modal = document.getElementById('requestModal');
+        const openBtn = document.getElementById('openModalBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const form = document.getElementById('webhookForm');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        // Webhook URL
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1535487464003739738/Q5joJzE5mtbJjf7It1fm-aCbs_UphjXDZ4VH_OezFB-piXu7gp5X-2AbfwxtwdBUqCFN";
+
+        // Toast Logic
+        const showToast = (message, type = "success") => {
+            toastMessage.innerText = message;
+            
+            // Update icon and color based on type
+            const icon = toast.querySelector('i');
+            if(type === "success") {
+                toast.className = 'toast success show';
+                icon.className = 'fa-solid fa-circle-check';
+            } else {
+                toast.className = 'toast error show';
+                icon.className = 'fa-solid fa-circle-exclamation';
+            }
+
+            // Hide after 4 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        };
+
+        // Modal Logic
+        openBtn.addEventListener('click', () => {
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        });
+
+        const closeModal = () => {
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // Form Submission Logic
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const reason = document.getElementById('reason').value;
+            const customHtml = document.getElementById('customHtmlSelect').value;
+
+            const payload = {
+                username: "Website Request Bot",
+                embeds: [{
+                    title: "🚀 New Website Request!",
+                    color: 3685848,
+                    fields: [
+                        { name: "Email Address", value: email, inline: false },
+                        { name: "Why do they want a custom website?", value: reason, inline: false },
+                        { name: "Custom HTML Status", value: customHtml, inline: false }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            try {
+                // UI Loading State
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalHtml = submitBtn.innerHTML;
+                submitBtn.innerHTML = 'Sending... <i class="fa-solid fa-circle-notch fa-spin"></i>';
+                submitBtn.disabled = true;
+
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    showToast("Your request was sent successfully!", "success");
+                    form.reset();
+                    closeModal();
+                } else {
+                    showToast("Error sending request. Try again.", "error");
+                }
+
+                // Restore Button State
+                submitBtn.innerHTML = originalHtml;
+                submitBtn.disabled = false;
+
+            } catch (error) {
+                console.error("Error:", error);
+                showToast("Network error. Check connection.", "error");
+            }
+        });
+    </script>
+</body>
+</html>
