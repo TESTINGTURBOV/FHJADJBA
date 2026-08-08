@@ -33,7 +33,7 @@
             position: relative;
         }
 
-        /* Animated Live-Coding Workspace Background */
+        /* Python Workspace Typing Background */
         #code-bg {
             position: fixed;
             top: 0;
@@ -240,8 +240,7 @@
     </div>
 
     <script>
-        // --- 1. ANIMATED LIVE-CODING BACKGROUND EFFECT ---
-        // Simulates actual code being typed out line-by-line across multiple streams on the screen.
+        // --- 1. PURE PYTHON SYNTAX BACKGROUND ANIMATION ---
         const canvas = document.getElementById('code-bg');
         const ctx = canvas.getContext('2d');
 
@@ -252,65 +251,68 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        const codeStreams = [
-            "public class Emma extends Coder {",
-            "    private int age = 20;",
-            "    public boolean isFurry = true;",
-            "    def play_instruments():",
-            "        return ['drums', 'keyboard', 'guitar'];",
-            "}",
-            "<html>",
-            "  <head><title>Emma's Portfolio</title></head>",
-            "  <body><div class='profile'>Hello World</div></body>",
-            "</html>",
-            "import java.util.Scanner;",
-            "from music import dry_kill_logic, soad, acid_bath;",
-            "git status && git commit -m 'updating site'",
-            "npm run dev --host"
+        // Meaningful, syntactically clean Python snippets
+        const pythonStreams = [
+            "class Coder:",
+            "    def __init__(self, name, age):",
+            "        self.name = name",
+            "        self.age = age",
+            "        self.languages = ['Java', 'Python', 'HTML']",
+            "    ",
+            "    def play_music(self, instrument):",
+            "        return f'{self.name} is jamming on the {instrument}!'",
+            "",
+            "emma = Coder('Emma', 20)",
+            "instruments = ['drums', 'keyboard', 'guitar']",
+            "for item in instruments:",
+            "    print(emma.play_music(item))",
+            "",
+            "bands = ['Dry Kill Logic', 'SOAD', 'The Chats', 'Acid Bath']",
+            "is_furry = True",
+            "if is_furry:",
+            "    print('Welcome to Emma\\'s portfolio!')"
         ];
 
-        // Track active streams being typed on the background canvas
         let activeStreams = [];
         for (let i = 0; i < 6; i++) {
             activeStreams.push({
-                snippetIndex: Math.floor(Math.random() * codeStreams.length),
+                lineIndex: Math.floor(Math.random() * pythonStreams.length),
                 charIndex: 0,
-                x: Math.random() * (canvas.width - 300),
-                y: 50 + (i * 100),
-                speed: 2 // typing speed per frame
+                x: Math.random() * (canvas.width - 400),
+                y: 60 + (i * 90)
             });
         }
 
-        function animateCodeBackground() {
-            ctx.fillStyle = 'rgba(10, 10, 10, 0.15)'; // creates a trailing fade effect
+        function animatePythonBackground() {
+            ctx.fillStyle = 'rgba(10, 10, 10, 0.12)'; // smooth trailing fade
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             ctx.fillStyle = '#ffffff';
             ctx.font = '13px monospace';
 
             activeStreams.forEach(stream => {
-                let fullText = codeStreams[stream.snippetIndex];
+                let fullText = pythonStreams[stream.lineIndex];
                 let currentText = fullText.substring(0, Math.floor(stream.charIndex));
                 
                 ctx.fillText(currentText, stream.x, stream.y);
 
-                stream.charIndex += 0.4; // animation frame progression
+                stream.charIndex += 0.45; // typing progression speed
 
-                // Once a snippet finishes typing, switch to a new one
+                // Once a line finishes typing out, transition to a new line
                 if (stream.charIndex > fullText.length + 15) {
-                    stream.snippetIndex = Math.floor(Math.random() * codeStreams.length);
+                    stream.lineIndex = (stream.lineIndex + 1) % pythonStreams.length;
                     stream.charIndex = 0;
-                    stream.x = Math.random() * (canvas.width - 300);
+                    stream.x = Math.random() * (canvas.width - 400);
                     stream.y = Math.random() * (canvas.height - 50) + 30;
                 }
             });
 
-            requestAnimationFrame(animateCodeBackground);
+            requestAnimationFrame(animatePythonBackground);
         }
-        requestAnimationFrame(animateCodeBackground);
+        requestAnimationFrame(animatePythonBackground);
 
 
-        // --- 2. FAST TYPING EFFECT FOR CONTENT ---
+        // --- 2. TYPING EFFECT FOR CONTENT ---
         const languages = ["Java", "Python", "HTML"];
         const aboutLines = [
             "I'm 20 years old.",
@@ -325,8 +327,7 @@
             { name: "Acid Bath", url: "https://open.spotify.com/artist/3n5jeTRWZEbTPJWyHSYUqn?si=oKubhpF6TZ2cG4bCGCvKuw" }
         ];
 
-        // Increased typing speed (lower speed number = faster typing)
-        function typeText(element, text, speed = 15) {
+        function typeText(element, text, speed = 12) {
             return new Promise(resolve => {
                 let i = 0;
                 element.classList.add('typing-cursor');
@@ -334,7 +335,7 @@
                     if (i < text.length) {
                         element.textContent += text.charAt(i);
                         i++;
-                        setTimeout(type, speed + Math.random() * 10);
+                        setTimeout(type, speed + Math.random() * 8);
                     } else {
                         element.classList.remove('typing-cursor');
                         resolve();
@@ -352,18 +353,18 @@
             for (let lang of languages) {
                 const li = document.createElement('li');
                 langList.appendChild(li);
-                await typeText(li, lang, 20);
-                await new Promise(r => setTimeout(r, 80));
+                await typeText(li, lang, 15);
+                await new Promise(r => setTimeout(r, 60));
             }
 
-            // Type About Me Sections (Faster)
+            // Type About Me Sections
             for (let index = 0; index < aboutLines.length; index++) {
                 const p = document.getElementById(`about-${index + 1}`);
-                await typeText(p, aboutLines[index], 12);
-                await new Promise(r => setTimeout(r, 120));
+                await typeText(p, aboutLines[index], 10);
+                await new Promise(r => setTimeout(r, 90));
             }
 
-            // Type Music/Bands Sections (Faster)
+            // Type Music/Bands Sections
             const musicList = document.getElementById('music-list');
             for (let band of musicBands) {
                 const li = document.createElement('li');
@@ -373,8 +374,8 @@
                 li.appendChild(a);
                 musicList.appendChild(li);
                 
-                await typeText(a, band.name, 15);
-                await new Promise(r => setTimeout(r, 80));
+                await typeText(a, band.name, 12);
+                await new Promise(r => setTimeout(r, 60));
             }
         }
 
