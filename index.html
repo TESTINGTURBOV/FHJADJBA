@@ -13,59 +13,87 @@
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
+        /* Animated Gradient Background */
         body {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #0c4a6e, #020617);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             color: #f8fafc;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             text-align: center;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Main Container */
         .container {
             max-width: 600px;
             padding: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeIn 1s ease-out;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            /* Initial state for entrance animation */
+            opacity: 0;
+            animation: containerFadeIn 0.8s ease-out forwards;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 15px;
-            color: #38bdf8;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            animation: slideUp 0.6s ease-out forwards 0.2s;
         }
 
         p {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             line-height: 1.6;
             margin-bottom: 15px;
             color: #cbd5e1;
+            opacity: 0;
         }
 
-        /* Button Styling */
+        /* Staggered text animations */
+        p:nth-of-type(1) { animation: slideUp 0.6s ease-out forwards 0.4s; }
+        p:nth-of-type(2) { animation: slideUp 0.6s ease-out forwards 0.6s; }
+
+        /* Button Styling & Animation */
         .btn {
-            background-color: #38bdf8;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
             color: #0f172a;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 28px;
             font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 8px;
+            font-weight: bold;
+            border-radius: 10px;
             cursor: pointer;
             margin-top: 20px;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            opacity: 0;
+            animation: slideUp 0.6s ease-out forwards 0.8s;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
         }
 
         .btn:hover {
-            background-color: #0ea5e9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
         }
 
         /* Modal Overlay */
@@ -73,25 +101,39 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            animation: fadeIn 0.3s ease-out;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        /* Modal Content */
+        /* Modern Bouncy Modal Content */
         .modal-content {
             background: #1e293b;
-            padding: 30px;
-            border-radius: 12px;
+            padding: 35px;
+            border-radius: 16px;
             width: 90%;
             max-width: 500px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: left;
-            animation: slideUp 0.4s ease-out;
-            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            /* Bouncy entrance */
+            transform: scale(0.8) translateY(30px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Classes to trigger modal animations via JS */
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-overlay.show .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
         }
 
         .close-btn {
@@ -100,59 +142,69 @@
             right: 20px;
             background: none;
             border: none;
-            color: #cbd5e1;
-            font-size: 1.5rem;
+            color: #64748b;
+            font-size: 1.8rem;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.2s ease;
         }
 
-        .close-btn:hover { color: #f8fafc; }
+        .close-btn:hover { 
+            color: #f8fafc; 
+            transform: rotate(90deg);
+        }
 
-        .modal-content h2 { margin-bottom: 20px; color: #f8fafc; }
+        .modal-content h2 { 
+            margin-bottom: 25px; 
+            color: #f8fafc; 
+            font-size: 1.8rem;
+        }
 
         /* Form Styling */
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 22px; }
         
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-size: 0.95rem;
-            color: #cbd5e1;
+            color: #e2e8f0;
+            font-weight: 500;
         }
         
         .form-info {
             font-size: 0.85rem;
             color: #94a3b8;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: block;
         }
 
         input[type="email"], select, textarea {
             width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #475569;
-            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #334155;
+            background: rgba(15, 23, 42, 0.6);
             color: #f8fafc;
             font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #38bdf8;
-            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
         }
 
-        textarea { resize: vertical; min-height: 80px; }
+        textarea { resize: vertical; min-height: 90px; }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        /* Keyframes */
+        @keyframes containerFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -192,7 +244,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn" style="width: 100%;">Submit Request</button>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px; animation: none; opacity: 1;">Submit Request</button>
             </form>
         </div>
     </div>
@@ -207,20 +259,29 @@
         // Webhook URL provided by user
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1535487464003739738/Q5joJzE5mtbJjf7It1fm-aCbs_UphjXDZ4VH_OezFB-piXu7gp5X-2AbfwxtwdBUqCFN";
 
-        // Open Modal
+        // Open Modal with animation
         openBtn.addEventListener('click', () => {
             modal.style.display = 'flex';
+            // slight delay to allow display:flex to apply before adding class
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
         });
 
-        // Close Modal
-        closeBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
+        // Close Modal with animation
+        const closeModal = () => {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300); // Matches the CSS transition duration
+        };
+
+        closeBtn.addEventListener('click', closeModal);
 
         // Close on clicking outside the modal box
         window.addEventListener('click', (e) => {
             if (e.target === modal) {
-                modal.style.display = 'none';
+                closeModal();
             }
         });
 
@@ -279,7 +340,7 @@
                 if (response.ok) {
                     alert("Your request has been sent successfully!");
                     form.reset();
-                    modal.style.display = 'none';
+                    closeModal();
                 } else {
                     alert("There was an error sending your request. Please try again later.");
                     console.error("Discord Error:", response.status);
