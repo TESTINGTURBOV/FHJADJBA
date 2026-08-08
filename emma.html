@@ -5,70 +5,222 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emma's Website</title>
     <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #141414;
+            --text-color: #f3f3f3;
+            --accent-color: #ffffff;
+            --muted-color: #888888;
+            --border-color: #262626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            background-color: #ffffff;
-            color: #000000;
-            font-family: monospace, sans-serif;
-            margin: 40px;
-            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
         }
 
-        h1, h2 {
-            border-bottom: 2px solid #000000;
-            padding-bottom: 5px;
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        ul {
-            list-style-type: square;
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        a {
-            color: #000000;
-            text-decoration: underline;
+        header {
+            margin-bottom: 35px;
+            text-align: left;
         }
 
-        a:hover {
-            background-color: #000000;
-            color: #ffffff;
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--accent-color);
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid var(--accent-color);
+            width: 0;
+            animation: typing 1.5s steps(20, end) forwards, blink 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--accent-color); }
         }
 
         section {
             margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        section:nth-child(2) { animation-delay: 0.3s; }
+        section:nth-child(3) { animation-delay: 0.5s; }
+        section:nth-child(4) { animation-delay: 0.7s; }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted-color);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        li {
+            background: #1f1f1f;
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        li:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+
+        /* Styling for links list specifically */
+        section:last-of-type ul {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        section:last-of-type li {
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        section:last-of-type li:hover {
+            background: transparent;
+            transform: none;
+        }
+
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--accent-color);
+            background: transparent;
+        }
+
+        a:hover::after {
+            width: 100%;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Hello! im Emma</h1>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Hello! im Emma</h1>
+        </header>
 
-    <section>
-        <h2>Coding languages i know</h2>
-        <ul>
-            <li>Java</li>
-            <li>Python</li>
-            <li>HTML</li>
-        </ul>
-    </section>
+        <section>
+            <h2>Coding languages i know</h2>
+            <ul>
+                <li>Java</li>
+                <li>Python</li>
+                <li>HTML</li>
+            </ul>
+        </section>
 
-    <section>
-        <h2>About me</h2>
-        <p>I'm 20 years old.</p>
-        <p>I know how to play the drums, keyboard, and guitar.</p>
-        <p>I am a furry!</p>
-    </section>
+        <section>
+            <h2>About me</h2>
+            <p>I'm 20 years old.</p>
+            <p>I know how to play the drums, keyboard, and guitar.</p>
+            <p>I am a furry!</p>
+        </section>
 
-    <section>
-        <h2>Music/bands im into</h2>
-        <ul>
-            <li><a href="https://open.spotify.com/artist/01JN808vH1vhH7O7IsyRgX?si=eBWULFbgTmy4UTxd2uxIFA" target="_blank">Dry Kill Logic</a></li>
-            <li><a href="https://open.spotify.com/artist/5eAWCfyUhZtHHtBdNk56l1?si=Lrk9qAFJQ4uI69a5wMKdZw" target="_blank">System of a Down</a></li>
-            <li><a href="https://open.spotify.com/artist/4DKf2I9FiIqpKcMPnjRpjF?si=V19jg30PR5C0nrTxgxa2JQ" target="_blank">Hive Mind Blunt Rotation</a></li>
-            <li><a href="https://open.spotify.com/artist/1aQ7P3HtKOQFW16ebjiks1?si=oCp4PD6VRp-F4LH4IOKLfQ" target="_blank">The Chats</a></li>
-            <li><a href="https://open.spotify.com/artist/3n5jeTRWZEbTPJWyHSYUqn?si=oKubhpF6TZ2cG4bCGCvKuw" target="_blank">Acid Bath</a></li>
-        </ul>
-    </section>
+        <section>
+            <h2>Music/bands im into</h2>
+            <ul>
+                <li><a href="https://open.spotify.com/artist/01JN808vH1vhH7O7IsyRgX?si=eBWULFbgTmy4UTxd2uxIFA" target="_blank">Dry Kill Logic</a></li>
+                <li><a href="https://open.spotify.com/artist/5eAWCfyUhZtHHtBdNk56l1?si=Lrk9qAFJQ4uI69a5wMKdZw" target="_blank">System of a Down</a></li>
+                <li><a href="https://open.spotify.com/artist/4DKf2I9FiIqpKcMPnjRpjF?si=V19jg30PR5C0nrTxgxa2JQ" target="_blank">Hive Mind Blunt Rotation</a></li>
+                <li><a href="https://open.spotify.com/artist/1aQ7P3HtKOQFW16ebjiks1?si=oCp4PD6VRp-F4LH4IOKLfQ" target="_blank">The Chats</a></li>
+                <li><a href="https://open.spotify.com/artist/3n5jeTRWZEbTPJWyHSYUqn?si=oKubhpF6TZ2cG4bCGCvKuw" target="_blank">Acid Bath</a></li>
+            </ul>
+        </section>
+    </div>
 
+    <script>
+        // Subtle interactive effect: Log a welcome message to the console
+        console.log("%cWelcome to Emma's modern dark-mode site!", "background: #000; color: #fff; padding: 4px 8px; border-radius: 4px; font-weight: bold;");
+    </script>
 </body>
 </html>
