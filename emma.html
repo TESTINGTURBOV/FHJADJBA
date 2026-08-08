@@ -153,49 +153,22 @@
             border-color: var(--accent-color);
         }
 
+        /* Spotify widget layout adjustment inside list items */
         section:last-of-type ul {
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
 
         section:last-of-type li {
             background: transparent;
             border: none;
             padding: 0;
+            width: 100%;
         }
 
         section:last-of-type li:hover {
             background: transparent;
             transform: none;
-        }
-
-        a {
-            color: var(--text-color);
-            text-decoration: none;
-            display: inline-block;
-            position: relative;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 1px;
-            bottom: -2px;
-            left: 0;
-            background-color: var(--accent-color);
-            transition: width 0.3s ease;
-        }
-
-        a:hover {
-            color: var(--accent-color);
-            background: transparent;
-        }
-
-        a:hover::after {
-            width: 100%;
         }
 
         .typing-cursor::after {
@@ -235,7 +208,13 @@
 
         <section>
             <h2>Music/bands im into</h2>
-            <ul id="music-list"></ul>
+            <ul id="music-list">
+                <li><iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/artist/3n5jeTRWZEbTPJWyHSYUqn?utm_source=generator&theme=0&si=f17d83e1ca2042dc" width="100%" height="152" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></li>
+                <li><iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/artist/5eAWCfyUhZtHHtBdNk56l1?utm_source=generator&theme=0&si=7cff48536c664721" width="100%" height="152" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></li>
+                <li><iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/artist/01JN808vH1vhH7O7IsyRgX?utm_source=generator&theme=0&si=1c88af4c3967422f" width="100%" height="152" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></li>
+                <li><iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/artist/4DKf2I9FiIqpKcMPnjRpjF?utm_source=generator&theme=0&si=a161e607e87443cb" width="100%" height="152" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></li>
+                <li><iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/artist/1aQ7P3HtKOQFW16ebjiks1?utm_source=generator&theme=0&si=a264739d8a084ae8" width="100%" height="152" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></li>
+            </ul>
         </section>
     </div>
 
@@ -251,7 +230,6 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // Meaningful, syntactically clean Python snippets
         const pythonStreams = [
             "class Coder:",
             "    def __init__(self, name, age):",
@@ -284,7 +262,7 @@
         }
 
         function animatePythonBackground() {
-            ctx.fillStyle = 'rgba(10, 10, 10, 0.12)'; // smooth trailing fade
+            ctx.fillStyle = 'rgba(10, 10, 10, 0.12)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             ctx.fillStyle = '#ffffff';
@@ -296,9 +274,8 @@
                 
                 ctx.fillText(currentText, stream.x, stream.y);
 
-                stream.charIndex += 0.45; // typing progression speed
+                stream.charIndex += 0.45;
 
-                // Once a line finishes typing out, transition to a new line
                 if (stream.charIndex > fullText.length + 15) {
                     stream.lineIndex = (stream.lineIndex + 1) % pythonStreams.length;
                     stream.charIndex = 0;
@@ -318,13 +295,6 @@
             "I'm 20 years old.",
             "I know how to play the drums, keyboard, and guitar.",
             "I am a furry!"
-        ];
-        const musicBands = [
-            { name: "Dry Kill Logic", url: "https://open.spotify.com/artist/01JN808vH1vhH7O7IsyRgX?si=eBWULFbgTmy4UTxd2uxIFA" },
-            { name: "System of a Down", url: "https://open.spotify.com/artist/5eAWCfyUhZtHHtBdNk56l1?si=Lrk9qAFJQ4uI69a5wMKdZw" },
-            { name: "Hive Mind Blunt Rotation", url: "https://open.spotify.com/artist/4DKf2I9FiIqpKcMPnjRpjF?si=V19jg30PR5C0nrTxgxa2JQ" },
-            { name: "The Chats", url: "https://open.spotify.com/artist/1aQ7P3HtKOQFW16ebjiks1?si=oCp4PD6VRp-F4LH4IOKLfQ" },
-            { name: "Acid Bath", url: "https://open.spotify.com/artist/3n5jeTRWZEbTPJWyHSYUqn?si=oKubhpF6TZ2cG4bCGCvKuw" }
         ];
 
         function typeText(element, text, speed = 12) {
@@ -362,20 +332,6 @@
                 const p = document.getElementById(`about-${index + 1}`);
                 await typeText(p, aboutLines[index], 10);
                 await new Promise(r => setTimeout(r, 90));
-            }
-
-            // Type Music/Bands Sections
-            const musicList = document.getElementById('music-list');
-            for (let band of musicBands) {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = band.url;
-                a.target = "_blank";
-                li.appendChild(a);
-                musicList.appendChild(li);
-                
-                await typeText(a, band.name, 12);
-                await new Promise(r => setTimeout(r, 60));
             }
         }
 
