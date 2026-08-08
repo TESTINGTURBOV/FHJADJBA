@@ -4,13 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ya story! - Static Hosting</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         /* Modern CSS Reset & Basics */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Outfit', sans-serif;
         }
 
         /* Animated Gradient Background */
@@ -25,6 +32,7 @@
             min-height: 100vh;
             text-align: center;
             overflow: hidden;
+            position: relative;
         }
 
         @keyframes gradientBG {
@@ -33,23 +41,53 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* Abstract Background Glows */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.5;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+
+        .orb-1 {
+            width: 300px; height: 300px;
+            background: #38bdf8;
+            top: 10%; left: 15%;
+        }
+
+        .orb-2 {
+            width: 400px; height: 400px;
+            background: #818cf8;
+            bottom: 10%; right: 10%;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-30px) scale(1.1); }
+        }
+
         /* Main Container */
         .container {
-            max-width: 600px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 20px;
+            position: relative;
+            z-index: 10;
+            max-width: 650px;
+            padding: 50px 40px;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 24px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            /* Initial state for entrance animation */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             opacity: 0;
             animation: containerFadeIn 0.8s ease-out forwards;
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-size: 3rem;
+            font-weight: 700;
             margin-bottom: 15px;
             background: linear-gradient(to right, #38bdf8, #818cf8);
             -webkit-background-clip: text;
@@ -60,6 +98,7 @@
 
         p {
             font-size: 1.15rem;
+            font-weight: 300;
             line-height: 1.6;
             margin-bottom: 15px;
             color: #cbd5e1;
@@ -72,289 +111,41 @@
 
         /* Button Styling & Animation */
         .btn {
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-            color: #0f172a;
+            background: linear-gradient(135deg, #38bdf8, #2563eb);
+            color: #f8fafc;
             border: none;
-            padding: 14px 28px;
+            padding: 14px 32px;
             font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 10px;
+            font-weight: 600;
+            border-radius: 12px;
             cursor: pointer;
             margin-top: 20px;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             opacity: 0;
             animation: slideUp 0.6s ease-out forwards 0.8s;
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
         }
 
         .btn:hover {
             transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+            box-shadow: 0 8px 30px rgba(56, 189, 248, 0.6);
+            background: linear-gradient(135deg, #7dd3fc, #3b82f6);
         }
 
         .btn:active {
             transform: translateY(1px);
         }
 
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         /* Modal Overlay */
         .modal-overlay {
             display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        /* Modern Bouncy Modal Content */
-        .modal-content {
-            background: #1e293b;
-            padding: 35px;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 500px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: left;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            /* Bouncy entrance */
-            transform: scale(0.8) translateY(30px);
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        /* Classes to trigger modal animations via JS */
-        .modal-overlay.show {
-            display: flex;
-            opacity: 1;
-        }
-        .modal-overlay.show .modal-content {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: #64748b;
-            font-size: 1.8rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .close-btn:hover { 
-            color: #f8fafc; 
-            transform: rotate(90deg);
-        }
-
-        .modal-content h2 { 
-            margin-bottom: 25px; 
-            color: #f8fafc; 
-            font-size: 1.8rem;
-        }
-
-        /* Form Styling */
-        .form-group { margin-bottom: 22px; }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-            color: #e2e8f0;
-            font-weight: 500;
-        }
-        
-        .form-info {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        input[type="email"], select, textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 2px solid #334155;
-            background: rgba(15, 23, 42, 0.6);
-            color: #f8fafc;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #38bdf8;
-            background: rgba(15, 23, 42, 0.9);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
-        }
-
-        textarea { resize: vertical; min-height: 90px; }
-
-        /* Keyframes */
-        @keyframes containerFadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <h1>Welcome to ya story!</h1>
-        <p>We host static websites for the people that just want a simple Bio or information website!</p>
-        <p>Want ya own information/bio website? feel free to request one below!</p>
-        <button class="btn" id="openModalBtn">Make a Request</button>
-    </div>
-
-    <div class="modal-overlay" id="requestModal">
-        <div class="modal-content">
-            <button class="close-btn" id="closeModalBtn">&times;</button>
-            <h2>Request a Custom Website</h2>
-            
-            <form id="webhookForm">
-                <div class="form-group">
-                    <label for="email">What is your email?</label>
-                    <input type="email" id="email" required placeholder="you@example.com">
-                </div>
-
-                <div class="form-group">
-                    <label for="reason">Why do you want a custom website here?</label>
-                    <textarea id="reason" required placeholder="Tell us about your project..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="customHtmlSelect">Do you want to send us a custom HTML?</label>
-                    <span class="form-info">If yes, please email your files to <strong>support@turbov.dev</strong> after submitting this form.</span>
-                    <select id="customHtmlSelect" required>
-                        <option value="" disabled selected>Select an option...</option>
-                        <option value="Yes, I will email the files to support@turbov.dev">Yes, I have custom HTML</option>
-                        <option value="No, I need a site made for me">No, I need one built</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn" style="width: 100%; margin-top: 10px; animation: none; opacity: 1;">Submit Request</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // DOM Elements
-        const modal = document.getElementById('requestModal');
-        const openBtn = document.getElementById('openModalBtn');
-        const closeBtn = document.getElementById('closeModalBtn');
-        const form = document.getElementById('webhookForm');
-
-        // Webhook URL provided by user
-        const WEBHOOK_URL = "https://discord.com/api/webhooks/1535487464003739738/Q5joJzE5mtbJjf7It1fm-aCbs_UphjXDZ4VH_OezFB-piXu7gp5X-2AbfwxtwdBUqCFN";
-
-        // Open Modal with animation
-        openBtn.addEventListener('click', () => {
-            modal.style.display = 'flex';
-            // slight delay to allow display:flex to apply before adding class
-            setTimeout(() => {
-                modal.classList.add('show');
-            }, 10);
-        });
-
-        // Close Modal with animation
-        const closeModal = () => {
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300); // Matches the CSS transition duration
-        };
-
-        closeBtn.addEventListener('click', closeModal);
-
-        // Close on clicking outside the modal box
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-
-        // Handle Form Submission
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            // Gather form data
-            const email = document.getElementById('email').value;
-            const reason = document.getElementById('reason').value;
-            const customHtml = document.getElementById('customHtmlSelect').value;
-
-            // Prepare Discord Embed Payload
-            const payload = {
-                username: "Website Request Bot",
-                embeds: [{
-                    title: "🚀 New Website Request!",
-                    color: 3685848, // #38bdf8 in decimal
-                    fields: [
-                        {
-                            name: "Email Address",
-                            value: email,
-                            inline: false
-                        },
-                        {
-                            name: "Why do they want a custom website?",
-                            value: reason,
-                            inline: false
-                        },
-                        {
-                            name: "Custom HTML Status",
-                            value: customHtml,
-                            inline: false
-                        }
-                    ],
-                    timestamp: new Date().toISOString()
-                }]
-            };
-
-            try {
-                // Change submit button text to show loading
-                const submitBtn = form.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerText;
-                submitBtn.innerText = "Sending...";
-                submitBtn.disabled = true;
-
-                // Send to Discord
-                const response = await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    alert("Your request has been sent successfully!");
-                    form.reset();
-                    closeModal();
-                } else {
-                    alert("There was an error sending your request. Please try again later.");
-                    console.error("Discord Error:", response.status);
-                }
-
-                // Reset button state
-                submitBtn.innerText = originalText;
-                submitBtn.disabled = false;
-
-            } catch (error) {
-                console.error("Error submitting form:", error);
-                alert("Network error. Please make sure you are connected to the internet and try again.");
-            }
-        });
-    </script>
-</body>
-</html>
