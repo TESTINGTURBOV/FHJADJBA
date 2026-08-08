@@ -35,6 +35,50 @@
             position: relative;
         }
 
+        /* Hide default cursor on devices with a mouse */
+        @media (pointer: fine) {
+            body, button, input, select, textarea, .close-btn { 
+                cursor: none !important; 
+            }
+        }
+
+        /* Custom Cursor Elements */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #38bdf8;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s;
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(56, 189, 248, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
+        }
+
+        /* Cursor Hover State */
+        .cursor-hover .cursor-dot {
+            width: 0;
+            height: 0;
+        }
+        .cursor-hover .cursor-outline {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(56, 189, 248, 0.1);
+            border-color: #38bdf8;
+        }
+
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -69,7 +113,7 @@
             100% { transform: translateY(-30px) scale(1.1); }
         }
 
-        /* Main Container */
+        /* Main Container (Now ready for 3D Tilt) */
         .container {
             position: relative;
             z-index: 10;
@@ -83,6 +127,12 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             opacity: 0;
             animation: containerFadeIn 0.8s ease-out forwards;
+            transform-style: preserve-3d;
+        }
+
+        /* Pop elements out in 3D when tilted */
+        .container h1, .container p, .container button {
+            transform: translateZ(30px);
         }
 
         h1 {
@@ -105,11 +155,10 @@
             opacity: 0;
         }
 
-        /* Staggered text animations */
         p:nth-of-type(1) { animation: slideUp 0.6s ease-out forwards 0.4s; }
         p:nth-of-type(2) { animation: slideUp 0.6s ease-out forwards 0.6s; }
 
-        /* Button Styling & Animation */
+        /* Button Styling */
         .btn {
             background: linear-gradient(135deg, #38bdf8, #2563eb);
             color: #f8fafc;
@@ -118,7 +167,6 @@
             font-size: 1.1rem;
             font-weight: 600;
             border-radius: 12px;
-            cursor: pointer;
             margin-top: 20px;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             opacity: 0;
@@ -131,20 +179,13 @@
         }
 
         .btn:hover {
-            transform: translateY(-3px) scale(1.02);
+            transform: translateY(-3px) scale(1.02) translateZ(40px);
             box-shadow: 0 8px 30px rgba(56, 189, 248, 0.6);
             background: linear-gradient(135deg, #7dd3fc, #3b82f6);
         }
 
-        .btn:active {
-            transform: translateY(1px);
-        }
-
-        .btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn:active { transform: translateY(1px); }
+        .btn:disabled { opacity: 0.7; transform: none; }
 
         /* Modal Overlay */
         .modal-overlay {
@@ -160,7 +201,6 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Modern Bouncy Modal Content */
         .modal-content {
             background: #1e293b;
             padding: 40px;
@@ -187,46 +227,27 @@
             border: none;
             color: #64748b;
             font-size: 1.8rem;
-            cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        .close-btn:hover { 
-            color: #f8fafc; 
-            transform: rotate(90deg);
-        }
+        .close-btn:hover { color: #f8fafc; transform: rotate(90deg); }
+        .modal-content h2 { margin-bottom: 25px; color: #f8fafc; font-size: 1.8rem; font-weight: 700; }
 
-        .modal-content h2 { 
-            margin-bottom: 25px; 
-            color: #f8fafc; 
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        /* Form Styling */
-        .form-group { margin-bottom: 22px; }
+        /* Form Styling & Validation */
+        .form-group { margin-bottom: 22px; position: relative; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 1rem; color: #e2e8f0; font-weight: 500; }
+        .form-info { font-size: 0.85rem; color: #94a3b8; margin-bottom: 10px; display: block; line-height: 1.4; }
         
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 1rem;
-            color: #e2e8f0;
-            font-weight: 500;
-        }
-        
-        .form-info {
-            font-size: 0.85rem;
+        .char-counter {
+            position: absolute;
+            bottom: -20px;
+            right: 5px;
+            font-size: 0.8rem;
             color: #94a3b8;
-            margin-bottom: 10px;
-            display: block;
-            line-height: 1.4;
+            transition: color 0.3s ease;
         }
 
-        /* Input Container for Icons */
-        .input-wrapper {
-            position: relative;
-        }
-
+        .input-wrapper { position: relative; }
         .input-wrapper i {
             position: absolute;
             left: 14px;
@@ -234,12 +255,16 @@
             transform: translateY(-50%);
             color: #64748b;
             font-size: 1.1rem;
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
+        /* Valid Input Styles */
+        .input-wrapper.valid i { color: #10b981; transform: translateY(-50%) scale(1.2); }
+        .input-wrapper.valid input { border-color: #10b981; }
 
         input[type="email"], select, textarea {
             width: 100%;
-            padding: 14px 14px 14px 40px; /* Left padding for icons */
+            padding: 14px 14px 14px 40px;
             border-radius: 10px;
             border: 2px solid #334155;
             background: rgba(15, 23, 42, 0.6);
@@ -248,11 +273,7 @@
             transition: all 0.3s ease;
         }
 
-        textarea { 
-            padding: 14px; /* Reset padding for textarea since it has no icon */
-            resize: vertical; 
-            min-height: 100px; 
-        }
+        textarea { padding: 14px; resize: none; min-height: 120px; }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
@@ -260,10 +281,7 @@
             background: rgba(15, 23, 42, 0.9);
             box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
         }
-
-        input:focus + i, select:focus + i {
-            color: #38bdf8;
-        }
+        input:focus + i, select:focus + i { color: #38bdf8; }
 
         /* Custom Toast Notification */
         .toast {
@@ -285,21 +303,14 @@
             opacity: 0;
             transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
-
-        .toast.show {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
+        .toast.show { transform: translateX(0); opacity: 1; }
         .toast.success i { color: #10b981; font-size: 1.3rem; }
         .toast.error i { color: #ef4444; font-size: 1.3rem; }
 
-        /* Keyframes */
         @keyframes containerFadeIn {
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
-
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -308,42 +319,46 @@
 </head>
 <body>
 
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-outline" id="cursorOutline"></div>
+
     <div class="glow-orb orb-1"></div>
     <div class="glow-orb orb-2"></div>
 
-    <div class="container">
+    <div class="container" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
         <h1>Welcome to ya story! <i class="fa-solid fa-sparkles" style="font-size: 2rem; color: #facc15;"></i></h1>
         <p>We host static websites for the people that just want a simple bio or information website.</p>
         <p>Want your own custom site? Feel free to request one below!</p>
-        <button class="btn" id="openModalBtn">
+        <button class="btn interactive" id="openModalBtn">
             Make a Request <i class="fa-solid fa-arrow-right"></i>
         </button>
     </div>
 
     <div class="modal-overlay" id="requestModal">
         <div class="modal-content">
-            <button class="close-btn" id="closeModalBtn">&times;</button>
+            <button class="close-btn interactive" id="closeModalBtn">&times;</button>
             <h2>Request a Website</h2>
             
             <form id="webhookForm">
                 <div class="form-group">
                     <label for="email">What is your email?</label>
-                    <div class="input-wrapper">
-                        <input type="email" id="email" required placeholder="you@example.com">
-                        <i class="fa-solid fa-envelope"></i>
+                    <div class="input-wrapper" id="emailWrapper">
+                        <input type="email" id="email" class="interactive" required placeholder="you@example.com">
+                        <i class="fa-solid fa-envelope" id="emailIcon"></i>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="reason">Why do you want a custom website here?</label>
-                    <textarea id="reason" required placeholder="Tell us about your project..."></textarea>
+                    <textarea id="reason" class="interactive" required maxlength="500" placeholder="Tell us about your project..."></textarea>
+                    <span class="char-counter" id="charCounter">0/500</span>
                 </div>
 
                 <div class="form-group">
                     <label for="customHtmlSelect">Do you want to send us custom HTML?</label>
                     <span class="form-info">If yes, please email your files to <strong>support@turbov.dev</strong> after submitting.</span>
                     <div class="input-wrapper">
-                        <select id="customHtmlSelect" required style="padding-left: 40px;">
+                        <select id="customHtmlSelect" class="interactive" required style="padding-left: 40px;">
                             <option value="" disabled selected>Select an option...</option>
                             <option value="Yes, I will email the files to support@turbov.dev">Yes, I have custom HTML</option>
                             <option value="No, I need a site made for me">No, I need one built</option>
@@ -352,7 +367,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn" style="width: 100%; margin-top: 10px; animation: none; opacity: 1;">
+                <button type="submit" class="btn interactive" style="width: 100%; margin-top: 10px; animation: none; opacity: 1;">
                     Submit Request <i class="fa-regular fa-paper-plane"></i>
                 </button>
             </form>
@@ -364,8 +379,69 @@
         <span id="toastMessage">Request sent successfully!</span>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
     <script>
-        // DOM Elements
+        // --- 1. CUSTOM CURSOR LOGIC ---
+        const cursorDot = document.getElementById("cursorDot");
+        const cursorOutline = document.getElementById("cursorOutline");
+        const interactives = document.querySelectorAll(".interactive");
+
+        window.addEventListener("mousemove", (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Direct follow for dot
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Smooth follow for outline
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Hover effect for buttons and inputs
+        interactives.forEach(el => {
+            el.addEventListener("mouseenter", () => document.body.classList.add("cursor-hover"));
+            el.addEventListener("mouseleave", () => document.body.classList.remove("cursor-hover"));
+        });
+
+        // --- 2. LIVE FORM VALIDATION ---
+        const emailInput = document.getElementById('email');
+        const emailWrapper = document.getElementById('emailWrapper');
+        const emailIcon = document.getElementById('emailIcon');
+        
+        emailInput.addEventListener('input', (e) => {
+            // Regex for basic email validation
+            const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value);
+            if(isValid) {
+                emailWrapper.classList.add('valid');
+                emailIcon.className = 'fa-solid fa-circle-check';
+            } else {
+                emailWrapper.classList.remove('valid');
+                emailIcon.className = 'fa-solid fa-envelope';
+            }
+        });
+
+        const reasonInput = document.getElementById('reason');
+        const charCounter = document.getElementById('charCounter');
+
+        reasonInput.addEventListener('input', (e) => {
+            const len = e.target.value.length;
+            charCounter.innerText = `${len}/500`;
+            
+            if (len >= 450) {
+                charCounter.style.color = '#ef4444'; // Red
+            } else if (len >= 350) {
+                charCounter.style.color = '#facc15'; // Yellow
+            } else {
+                charCounter.style.color = '#94a3b8'; // Default
+            }
+        });
+
+        // --- 3. MODAL & TOAST LOGIC ---
         const modal = document.getElementById('requestModal');
         const openBtn = document.getElementById('openModalBtn');
         const closeBtn = document.getElementById('closeModalBtn');
@@ -373,14 +449,10 @@
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toastMessage');
 
-        // Webhook URL
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1535487464003739738/Q5joJzE5mtbJjf7It1fm-aCbs_UphjXDZ4VH_OezFB-piXu7gp5X-2AbfwxtwdBUqCFN";
 
-        // Toast Logic
         const showToast = (message, type = "success") => {
             toastMessage.innerText = message;
-            
-            // Update icon and color based on type
             const icon = toast.querySelector('i');
             if(type === "success") {
                 toast.className = 'toast success show';
@@ -389,14 +461,9 @@
                 toast.className = 'toast error show';
                 icon.className = 'fa-solid fa-circle-exclamation';
             }
-
-            // Hide after 4 seconds
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 4000);
+            setTimeout(() => { toast.classList.remove('show'); }, 4000);
         };
 
-        // Modal Logic
         openBtn.addEventListener('click', () => {
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('show'), 10);
@@ -408,12 +475,11 @@
         };
 
         closeBtn.addEventListener('click', closeModal);
-
         window.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
         });
 
-        // Form Submission Logic
+        // --- 4. FORM SUBMISSION ---
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -436,7 +502,6 @@
             };
 
             try {
-                // UI Loading State
                 const submitBtn = form.querySelector('button[type="submit"]');
                 const originalHtml = submitBtn.innerHTML;
                 submitBtn.innerHTML = 'Sending... <i class="fa-solid fa-circle-notch fa-spin"></i>';
@@ -451,12 +516,14 @@
                 if (response.ok) {
                     showToast("Your request was sent successfully!", "success");
                     form.reset();
+                    emailWrapper.classList.remove('valid');
+                    emailIcon.className = 'fa-solid fa-envelope';
+                    charCounter.innerText = '0/500';
                     closeModal();
                 } else {
                     showToast("Error sending request. Try again.", "error");
                 }
 
-                // Restore Button State
                 submitBtn.innerHTML = originalHtml;
                 submitBtn.disabled = false;
 
