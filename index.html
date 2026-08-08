@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ya story! - Static Hosting</title>
+    <style>
+        /* Modern CSS Reset & Basics */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 600px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 1s ease-out;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #38bdf8;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+
+        /* Button Styling */
+        .btn {
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0ea5e9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: left;
+            animation: slideUp 0.4s ease-out;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover { color: #f8fafc; }
+
+        .modal-content h2 { margin-bottom: 20px; color: #f8fafc; }
+
+        /* Form Styling */
+        .form-group { margin-bottom: 20px; }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+        
+        .form-info {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input[type="email"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #f8fafc;
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        }
+
+        textarea { resize: vertical; min-height: 80px; }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome to ya story!</h1>
+        <p>We host static websites for the people that just want a simple Bio or information website!</p>
+        <p>Want ya own information/bio website? feel free to request one below!</p>
+        <button class="btn" id="openModalBtn">Make a Request</button>
+    </div>
+
+    <div class="modal-overlay" id="requestModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModalBtn">&times;</button>
+            <h2>Request a Custom Website</h2>
+            
+            <form id="webhookForm">
+                <div class="form-group">
+                    <label for="email">What is your email?</label>
+                    <input type="email" id="email" required placeholder="you@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Why do you want a custom website here?</label>
+                    <textarea id="reason" required placeholder="Tell us about your project..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="customHtmlSelect">Do you want to send us a custom HTML?</label>
+                    <span class="form-info">If yes, please email your files to <strong>support@turbov.dev</strong> after submitting this form.</span>
+                    <select id="customHtmlSelect" required>
+                        <option value="" disabled selected>Select an option...</option>
+                        <option value="Yes, I will email the files to support@turbov.dev">Yes, I have custom HTML</option>
+                        <option value="No, I need a site made for me">No, I need one built</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%;">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const modal = document.getElementById('requestModal');
+        const openBtn = document.getElementById('openModalBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const form = document.getElementById('webhookForm');
+
+        // Webhook URL provided by user
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1535487464003739738/Q5joJzE5mtbJjf7It1fm-aCbs_UphjXDZ4VH_OezFB-piXu7gp5X-2AbfwxtwdBUqCFN";
+
+        // Open Modal
+        openBtn.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+
+        // Close Modal
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Close on clicking outside the modal box
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Handle Form Submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Gather form data
+            const email = document.getElementById('email').value;
+            const reason = document.getElementById('reason').value;
+            const customHtml = document.getElementById('customHtmlSelect').value;
+
+            // Prepare Discord Embed Payload
+            const payload = {
+                username: "Website Request Bot",
+                embeds: [{
+                    title: "🚀 New Website Request!",
+                    color: 3685848, // #38bdf8 in decimal
+                    fields: [
+                        {
+                            name: "Email Address",
+                            value: email,
+                            inline: false
+                        },
+                        {
+                            name: "Why do they want a custom website?",
+                            value: reason,
+                            inline: false
+                        },
+                        {
+                            name: "Custom HTML Status",
+                            value: customHtml,
+                            inline: false
+                        }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            try {
+                // Change submit button text to show loading
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerText;
+                submitBtn.innerText = "Sending...";
+                submitBtn.disabled = true;
+
+                // Send to Discord
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert("Your request has been sent successfully!");
+                    form.reset();
+                    modal.style.display = 'none';
+                } else {
+                    alert("There was an error sending your request. Please try again later.");
+                    console.error("Discord Error:", response.status);
+                }
+
+                // Reset button state
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+
+            } catch (error) {
+                console.error("Error submitting form:", error);
+                alert("Network error. Please make sure you are connected to the internet and try again.");
+            }
+        });
+    </script>
+</body>
+</html>
