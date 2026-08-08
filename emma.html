@@ -7,7 +7,7 @@
     <style>
         :root {
             --bg-color: #0a0a0a;
-            --card-bg: rgba(20, 20, 20, 0.85); /* Slightly transparent so canvas shows through */
+            --card-bg: rgba(20, 20, 20, 0.85);
             --text-color: #f3f3f3;
             --accent-color: #ffffff;
             --muted-color: #888888;
@@ -33,15 +33,16 @@
             position: relative;
         }
 
-        /* Matrix/Coding background canvas styling */
-        #matrix-bg {
+        /* Subtle Coder Code-Snippet Grid Background */
+        #code-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.25; /* Keeps it subtle so it doesn't distract from content */
+            opacity: 0.12;
+            pointer-events: none;
         }
 
         .container {
@@ -126,6 +127,7 @@
             font-size: 1.05rem;
             margin-bottom: 8px;
             color: var(--text-color);
+            min-height: 1.5em; /* Prevents layout jump while typing */
         }
 
         ul {
@@ -196,11 +198,25 @@
         a:hover::after {
             width: 100%;
         }
+
+        /* Cursor blink for typing effect */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink-cursor 0.7s infinite;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-left: 2px;
+        }
+
+        @keyframes blink-cursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body>
 
-    <canvas id="matrix-bg"></canvas>
+    <canvas id="code-bg"></canvas>
 
     <div class="container">
         <header>
@@ -209,87 +225,146 @@
 
         <section>
             <h2>Coding languages i know</h2>
-            <ul>
-                <li>Java</li>
-                <li>Python</li>
-                <li>HTML</li>
-            </ul>
+            <ul id="languages-list">
+                </ul>
         </section>
 
         <section>
             <h2>About me</h2>
-            <p>I'm 20 years old.</p>
-            <p>I know how to play the drums, keyboard, and guitar.</p>
-            <p>I am a furry!</p>
+            <p id="about-1"></p>
+            <p id="about-2"></p>
+            <p id="about-3"></p>
         </section>
 
         <section>
             <h2>Music/bands im into</h2>
-            <ul>
-                <li><a href="https://open.spotify.com/artist/01JN808vH1vhH7O7IsyRgX?si=eBWULFbgTmy4UTxd2uxIFA" target="_blank">Dry Kill Logic</a></li>
-                <li><a href="https://open.spotify.com/artist/5eAWCfyUhZtHHtBdNk56l1?si=Lrk9qAFJQ4uI69a5wMKdZw" target="_blank">System of a Down</a></li>
-                <li><a href="https://open.spotify.com/artist/4DKf2I9FiIqpKcMPnjRpjF?si=V19jg30PR5C0nrTxgxa2JQ" target="_blank">Hive Mind Blunt Rotation</a></li>
-                <li><a href="https://open.spotify.com/artist/1aQ7P3HtKOQFW16ebjiks1?si=oCp4PD6VRp-F4LH4IOKLfQ" target="_blank">The Chats</a></li>
-                <li><a href="https://open.spotify.com/artist/3n5jeTRWZEbTPJWyHSYUqn?si=oKubhpF6TZ2cG4bCGCvKuw" target="_blank">Acid Bath</a></li>
-            </ul>
+            <ul id="music-list">
+                </ul>
         </section>
     </div>
 
     <script>
-        // Matrix-style falling code background effect
-        const canvas = document.getElementById('matrix-bg');
+        // --- 1. CODER BACKGROUND EFFECT ---
+        // Instead of falling hacker columns, this draws static, softly fading lines of code snippets 
+        // to look like an IDE background workspace.
+        const canvas = document.getElementById('code-bg');
         const ctx = canvas.getContext('2d');
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            drawCodeLines();
         }
-        resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // Characters used for the coding effect (mix of code symbols, numbers, and letters)
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}[]<>//\\*+-=~#_JavaPythonHTML';
-        const fontSize = 14;
-        let columns = Math.floor(canvas.width / fontSize);
-        
-        // Track the y position of each column
-        let drops = [];
-        for (let i = 0; i < columns; i++) {
-            drops[i] = 1;
-        }
+        const codeSnippets = [
+            "public class Emma extends Coder {",
+            "    private int age = 20;",
+            "    def play_instruments():",
+            "        return ['drums', 'keyboard', 'guitar']",
+            "}",
+            "<html>",
+            "  <head><title>Emma's Site</title></head>",
+            "  <body><div class='furry'>🐾</div></body>",
+            "</html>",
+            "import java.util.Scanner;",
+            "from music import dry_kill_logic, soad, the_chats;",
+            "git commit -m 'initial portfolio setup'",
+            "npm run build --production"
+        ];
 
-        function drawMatrix() {
-            // Translucent black to create a trailing fade effect
-            ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function drawCodeLines() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '13px monospace';
 
-            ctx.fillStyle = '#ffffff'; // White characters for the monochrome theme
-            ctx.font = fontSize + 'px monospace';
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = characters.charAt(Math.floor(Math.random() * characters.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                // Reset drop back to top randomly once it hits the bottom
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
+            let y = 30;
+            for (let i = 0; i < codeSnippets.length * 3; i++) {
+                let snippet = codeSnippets[i % codeSnippets.length];
+                let x = (i % 2 === 0) ? 40 : 100;
+                ctx.fillText(snippet, x, y);
+                y += 45;
+                if (y > canvas.height) {
+                    y = 30;
+                    // shift x offset for depth
                 }
-                drops[i]++;
+            }
+        }
+        resizeCanvas();
+
+
+        // --- 2. DYNAMIC TYPING EFFECT FOR CONTENT ---
+        const languages = ["Java", "Python", "HTML"];
+        const aboutLines = [
+            "I'm 20 years old.",
+            "I know how to play the drums, keyboard, and guitar.",
+            "I am a furry!"
+        ];
+        const musicBands = [
+            { name: "Dry Kill Logic", url: "https://open.spotify.com/artist/01JN808vH1vhH7O7IsyRgX?si=eBWULFbgTmy4UTxd2uxIFA" },
+            { name: "System of a Down", url: "https://open.spotify.com/artist/5eAWCfyUhZtHHtBdNk56l1?si=Lrk9qAFJQ4uI69a5wMKdZw" },
+            { name: "Hive Mind Blunt Rotation", url: "https://open.spotify.com/artist/4DKf2I9FiIqpKcMPnjRpjF?si=V19jg30PR5C0nrTxgxa2JQ" },
+            { name: "The Chats", url: "https://open.spotify.com/artist/1aQ7P3HtKOQFW16ebjiks1?si=oCp4PD6VRp-F4LH4IOKLfQ" },
+            { name: "Acid Bath", url: "https://open.spotify.com/artist/3n5jeTRWZEbTPJWyHSYUqn?si=oKubhpF6TZ2cG4bCGCvKuw" }
+        ];
+
+        // Helper function to type text into an element character by character
+        function typeText(element, text, speed = 40) {
+            return new Promise(resolve => {
+                let i = 0;
+                element.classList.add('typing-cursor');
+                function type() {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(type, speed + Math.random() * 30); // Slight natural variance
+                    } else {
+                        element.classList.remove('typing-cursor');
+                        resolve();
+                    }
+                }
+                type();
+            });
+        }
+
+        // Sequence the typing effects smoothly section by section
+        async function runTypewriter() {
+            // Wait for header animation to settle first
+            await new Promise(r => setTimeout(r, 1200));
+
+            // 1. Type Coding Languages List Items
+            const langList = document.getElementById('languages-list');
+            for (let lang of languages) {
+                const li = document.createElement('li');
+                langList.appendChild(li);
+                await typeText(li, lang, 60);
+                await new Promise(r => setTimeout(r, 200));
+            }
+
+            // 2. Type About Me Paragraphs
+            for (let index = 0; index < aboutLines.length; index++) {
+                const p = document.getElementById(`about-${index + 1}`);
+                await typeText(p, aboutLines[index], 35);
+                await new Promise(r => setTimeout(r, 300));
+            }
+
+            // 3. Type Music/Bands List Items with links
+            const musicList = document.getElementById('music-list');
+            for (let band of musicBands) {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = band.url;
+                a.target = "_blank";
+                li.appendChild(a);
+                musicList.appendChild(li);
+                
+                await typeText(a, band.name, 40);
+                await new Promise(r => setTimeout(r, 150));
             }
         }
 
-        // Run the animation loop
-        setInterval(drawMatrix, 35);
-
-        // Adjust columns on window resize
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            columns = Math.floor(canvas.width / fontSize);
-            drops = [];
-            for (let i = 0; i < columns; i++) {
-                drops[i] = 1;
-            }
-        });
+        // Run the script sequence
+        runTypewriter();
 
         console.log("%cWelcome to Emma's modern dark-mode site!", "background: #000; color: #fff; padding: 4px 8px; border-radius: 4px; font-weight: bold;");
     </script>
